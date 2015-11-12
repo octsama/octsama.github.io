@@ -54,7 +54,7 @@
 
 
 <meta name="description" content="一些和GCD有关的
-1.创建队列创建一个串行队列
+创建队列创建一个串行队列
 1dispatch_queue_t queue = dispatch_queue_create(&quot;XxGcdTest&quot;, DISPATCH_QUEUE_SERIAL);
 或者创建一个并发队列">
 <meta property="og:type" content="article">
@@ -62,14 +62,14 @@
 <meta property="og:url" content="http://yoursite.com/2015/11/12/GCD-Notes/index.html">
 <meta property="og:site_name" content="XxsCode&Sth">
 <meta property="og:description" content="一些和GCD有关的
-1.创建队列创建一个串行队列
+创建队列创建一个串行队列
 1dispatch_queue_t queue = dispatch_queue_create(&quot;XxGcdTest&quot;, DISPATCH_QUEUE_SERIAL);
 或者创建一个并发队列">
-<meta property="og:updated_time" content="2015-11-12T07:47:51.000Z">
+<meta property="og:updated_time" content="2015-11-12T07:49:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GCD Notes">
 <meta name="twitter:description" content="一些和GCD有关的
-1.创建队列创建一个串行队列
+创建队列创建一个串行队列
 1dispatch_queue_t queue = dispatch_queue_create(&quot;XxGcdTest&quot;, DISPATCH_QUEUE_SERIAL);
 或者创建一个并发队列">
 
@@ -237,14 +237,14 @@
 
       
         <span itemprop="articleBody"><h1 id="一些和GCD有关的">一些和GCD有关的</h1><hr>
-<h2 id="1-创建队列">1.创建队列</h2><p>创建一个串行队列</p>
+<h2 id="创建队列">创建队列</h2><p>创建一个串行队列</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"XxGcdTest"</span>, DISPATCH_QUEUE_SERIAL);</span><br></pre></td></tr></table></figure>
 <p>或者创建一个并发队列<br><a id="more"></a></p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"XxGcdTest"</span>, DISPATCH_QUEUE_CONCURRENT);</span><br></pre></td></tr></table></figure>
 <p>来仔细看这段代码，两者之前的区别就是第二参数的不同</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_create<span class="list">(<span class="string">"XxGcdTest"</span>, DISPATCH_QUEUE_CONCURRENT)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>第一个参数为标签，第二个参数为队列的属性，分为串行和并发两种，串行就是让任务一个一个的执行，而并发就是可以让多个任务同时进行。</p>
-<h2 id="2-分配任务">2.分配任务</h2><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_async<span class="list">(<span class="keyword">&lt;#dispatch_queue_t</span> queue#&gt;, &lt;#^<span class="list">(<span class="keyword">void</span>)</span>block#&gt;)</span></span><br></pre></td></tr></table></figure>
+<h2 id="分配任务">分配任务</h2><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_async<span class="list">(<span class="keyword">&lt;#dispatch_queue_t</span> queue#&gt;, &lt;#^<span class="list">(<span class="keyword">void</span>)</span>block#&gt;)</span></span><br></pre></td></tr></table></figure>
 <p>或者</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_sync<span class="list">(<span class="keyword">&lt;#dispatch_queue_t</span> queue#&gt;, &lt;#^<span class="list">(<span class="keyword">void</span>)</span>block#&gt;)</span></span><br></pre></td></tr></table></figure>
 <p>在第一个参数上填上队列，然后在block中填入你想要做的任务，然后他就会自动开始。我们能决定的只有任务进行的方式，分为sync（同步）和async（异步），同步不会开启新的线程，而异步会开启新的线程用来执行任务。</p>
@@ -379,7 +379,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一些和GCD有关的"><span class="nav-number">1.</span> <span class="nav-text">一些和GCD有关的</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-创建队列"><span class="nav-number">1.1.</span> <span class="nav-text">1.创建队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-分配任务"><span class="nav-number">1.2.</span> <span class="nav-text">2.分配任务</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一些和GCD有关的"><span class="nav-number">1.</span> <span class="nav-text">一些和GCD有关的</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建队列"><span class="nav-number">1.1.</span> <span class="nav-text">创建队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分配任务"><span class="nav-number">1.2.</span> <span class="nav-text">分配任务</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
