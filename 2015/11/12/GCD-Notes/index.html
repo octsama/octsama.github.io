@@ -65,7 +65,7 @@
 创建队列创建一个串行队列
 1dispatch_queue_t queue = dispatch_queue_create(&quot;XxGcdTest&quot;, DISPATCH_QUEUE_SERIAL);
 或者创建一个并发队列">
-<meta property="og:updated_time" content="2015-11-12T07:49:16.000Z">
+<meta property="og:updated_time" content="2015-11-13T02:38:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GCD Notes">
 <meta name="twitter:description" content="一些和GCD有关的
@@ -248,6 +248,30 @@
 <p>或者</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_sync<span class="list">(<span class="keyword">&lt;#dispatch_queue_t</span> queue#&gt;, &lt;#^<span class="list">(<span class="keyword">void</span>)</span>block#&gt;)</span></span><br></pre></td></tr></table></figure>
 <p>在第一个参数上填上队列，然后在block中填入你想要做的任务，然后他就会自动开始。我们能决定的只有任务进行的方式，分为sync（同步）和async（异步），同步不会开启新的线程，而异步会开启新的线程用来执行任务。</p>
+<h2 id="各种队列的执行效果">各种队列的执行效果</h2><table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align:center">在全局或者并行队列</th>
+<th style="text-align:center">手动创建的串行队列</th>
+<th style="text-align:center">主队列</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>同步(sync)</td>
+<td style="text-align:center">没有创建新线程，串行执行任务</td>
+<td style="text-align:center">没有创建新线程，串行执行任务</td>
+<td style="text-align:center">死锁</td>
+</tr>
+<tr>
+<td>异步(async)</td>
+<td style="text-align:center">开启新线程，并行执行任务</td>
+<td style="text-align:center">有开启新线程，串行执行任务</td>
+<td style="text-align:center">不会创建新线程，最后执行任务</td>
+</tr>
+</tbody>
+</table>
 </span>
       
     </div>
@@ -379,7 +403,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一些和GCD有关的"><span class="nav-number">1.</span> <span class="nav-text">一些和GCD有关的</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建队列"><span class="nav-number">1.1.</span> <span class="nav-text">创建队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分配任务"><span class="nav-number">1.2.</span> <span class="nav-text">分配任务</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一些和GCD有关的"><span class="nav-number">1.</span> <span class="nav-text">一些和GCD有关的</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建队列"><span class="nav-number">1.1.</span> <span class="nav-text">创建队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分配任务"><span class="nav-number">1.2.</span> <span class="nav-text">分配任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#各种队列的执行效果"><span class="nav-number">1.3.</span> <span class="nav-text">各种队列的执行效果</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
