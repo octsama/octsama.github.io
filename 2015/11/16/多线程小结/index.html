@@ -1,0 +1,706 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="多线程的注意点（掌握）1.不要同时开太多的线程（1~3条线程即可，不要超过5条）2.线程概念1&amp;gt; 主线程 ： UI线程，显示、刷新UI界面，处理UI控件的事件2&amp;gt; 子线程 ： 后台线程，异步线程3.不要把耗时的操作放在主线程，要放在子线程中执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程小结">
+<meta property="og:url" content="http://yoursite.com/2015/11/16/多线程小结/index.html">
+<meta property="og:site_name" content="XxsCode&Sth">
+<meta property="og:description" content="多线程的注意点（掌握）1.不要同时开太多的线程（1~3条线程即可，不要超过5条）2.线程概念1&amp;gt; 主线程 ： UI线程，显示、刷新UI界面，处理UI控件的事件2&amp;gt; 子线程 ： 后台线程，异步线程3.不要把耗时的操作放在主线程，要放在子线程中执行">
+<meta property="og:updated_time" content="2015-11-16T03:17:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多线程小结">
+<meta name="twitter:description" content="多线程的注意点（掌握）1.不要同时开太多的线程（1~3条线程即可，不要超过5条）2.线程概念1&amp;gt; 主线程 ： UI线程，显示、刷新UI界面，处理UI控件的事件2&amp;gt; 子线程 ： 后台线程，异步线程3.不要把耗时的操作放在主线程，要放在子线程中执行">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> 多线程小结 | XxsCode&Sth </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">XxsCode&Sth</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">I'm glad to see you in this site.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                多线程小结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-16T11:04:17+08:00" content="2015-11-16">
+              2015-11-16
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="多线程的注意点（掌握）">多线程的注意点（掌握）</h2><p>1.不要同时开太多的线程（1~3条线程即可，不要超过5条）<br>2.线程概念<br>1&gt; 主线程 ： UI线程，显示、刷新UI界面，处理UI控件的事件<br>2&gt; 子线程 ： 后台线程，异步线程<br>3.不要把耗时的操作放在主线程，要放在子线程中执行</p>
+<a id="more"></a>
+<h3 id="一、NSThread（掌握）">一、NSThread（掌握）</h3><p>1.创建和启动线程的3种方式<br>1&gt; 先创建，后启动</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建</span></span><br><span class="line">NSThread *thread = [[NSThread alloc] <span class="string">initWithTarget:</span>self <span class="string">selector:</span><span class="annotation">@selector</span>(<span class="string">download:</span>) <span class="string">object:</span>nil];</span><br><span class="line"><span class="comment">// 启动</span></span><br><span class="line">[thread start];</span><br></pre></td></tr></table></figure>
+<p>2&gt; 创建完自动启动</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[NSThread <span class="string">detachNewThreadSelector:</span><span class="annotation">@selector</span>(<span class="string">download:</span>) <span class="string">toTarget:</span>self <span class="string">withObject:</span>nil];</span><br></pre></td></tr></table></figure>
+<p>3&gt; 隐式创建（自动启动）</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self <span class="string">performSelectorInBackground:</span><span class="annotation">@selector</span>(<span class="string">download:</span>) <span class="string">withObject:</span>nil];</span><br></pre></td></tr></table></figure>
+<p>2.常见方法<br>1&gt; 获得当前线程</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">+ </span>(NSThread *)currentThread;</span><br></pre></td></tr></table></figure>
+<p>2&gt; 获得主线程</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">+ </span>(NSThread *)mainThread;</span><br></pre></td></tr></table></figure>
+<p>3&gt; 睡眠（暂停）线程</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="typename">void</span>)<span class="string">sleepUntilDate:</span>(NSDate *)date;</span><br><span class="line">+ (<span class="typename">void</span>)<span class="string">sleepForTimeInterval:</span>(NSTimeInterval)ti;</span><br></pre></td></tr></table></figure>
+<p>4&gt; 设置线程的名字</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="pp">- <span class="params">(void)</span>setName:<span class="params">(<span class="variable">NSString</span> *)</span>n;</span><br><span class="line">- <span class="params">(<span class="variable">NSString</span> *)</span>name;</span></span><br></pre></td></tr></table></figure>
+<h3 id="二、线程同步（掌握）">二、线程同步（掌握）</h3><p>1.实质：为了防止多个线程抢夺同一个资源造成的数据安全问题</p>
+<p>2.实现：给代码加一个互斥锁（同步锁）</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@synchronized</span>(<span class="keyword">self</span>) &#123;</span><br><span class="line">    <span class="regexp">//</span> 被锁住的代码</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、GCD">三、GCD</h2><h3 id="1-队列和任务">1.队列和任务</h3><p>1&gt; 任务 ：需要执行什么操作</p>
+<ul>
+<li>用block来封装任务</li>
+</ul>
+<p>2&gt; 队列 ：存放任务</p>
+<ul>
+<li>全局的并发队列 ： 可以让任务并发执行</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>自己创建的串行队列 ： 让任务一个接着一个执行</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"cn.heima.queue"</span>, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>主队列 ： 让任务在主线程执行</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_get_main_queue();</span><br></pre></td></tr></table></figure>
+<h3 id="2-执行任务的函数">2.执行任务的函数</h3><p>1&gt; 同步执行 : 不具备开启新线程的能力</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_sync...</span><br></pre></td></tr></table></figure>
+<p>2&gt; 异步执行 : 具备开启新线程的能力</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_async...</span><br></pre></td></tr></table></figure>
+<h3 id="3-常见的组合（掌握）">3.常见的组合（掌握）</h3><p>1&gt; dispatch_async + 全局并发队列<br>2&gt; dispatch_async + 自己创建的串行队列</p>
+<h3 id="4-线程间的通信（掌握）">4.线程间的通信（掌握）</h3><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dispatch_async<span class="list">(<span class="keyword">dispatch_get_global_queue</span><span class="list">(<span class="keyword">DISPATCH_QUEUE_PRIORITY_DEFAULT</span>, <span class="number">0</span>)</span>, ^&#123;</span><br><span class="line">   // 执行耗时的异步操作...</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">   dispatch_async<span class="list">(<span class="keyword">dispatch_get_main_queue</span><span class="list">()</span>, ^&#123;</span><br><span class="line">       // 回到主线程，执行UI刷新操作</span><br><span class="line">   &#125;)</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<h3 id="5-GCD的所有API都在libdispatch-dylib，Xcode会自动导入这个库">5.GCD的所有API都在libdispatch.dylib，Xcode会自动导入这个库</h3><ul>
+<li>主头文件 ： #import <dispatch dispatch.h=""></dispatch></li>
+</ul>
+<h3 id="6-延迟执行（掌握）">6.延迟执行（掌握）</h3><p>1&gt; perform….</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 3秒后自动回到当前线程调用self的download:方法，并且传递参数：@"http://555.jpg"</span></span><br><span class="line">[self <span class="string">performSelector:</span><span class="annotation">@selector</span>(<span class="string">download:</span>) <span class="string">withObject:</span>@<span class="string">"http://555.jpg"</span> <span class="string">afterDelay:</span><span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+<p>2&gt; dispatch_after…</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 任务放到哪个队列中执行</span></span><br><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">double</span> delay = <span class="number">3</span>; <span class="comment">// 延迟多少秒</span></span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (<span class="keyword">int64_t</span>)(delay * NSEC_PER_SEC)), <span class="built_in">queue</span>, ^&#123;</span><br><span class="line">    <span class="comment">// 3秒后需要执行的任务</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="7-一次性代码（掌握）">7.一次性代码（掌握）</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line"><span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">    <span class="comment">// 这里面的代码，在程序运行过程中，永远只会执行1次</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="四、NSOperation和NSOperationQueue">四、NSOperation和NSOperationQueue</h2><h3 id="1-队列的类型">1.队列的类型</h3><p>1&gt; 主队列</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">*</span> [NSOperationQueue mainQueue]</span><br><span class="line"><span class="keyword">*</span> 添加到<span class="string">"主队列"</span>中的操作，都会放到主线程中执行</span><br></pre></td></tr></table></figure>
+<p>2&gt; 非主队列</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">*</span> [[NSOperationQueue alloc] init]</span><br><span class="line"><span class="keyword">*</span> 添加到<span class="string">"非主队列"</span>中的操作，都会放到子线程中执行</span><br></pre></td></tr></table></figure>
+<h3 id="2-队列添加任务">2.队列添加任务</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">* - (<span class="typename">void</span>)<span class="string">addOperation:</span>(NSOperation *)op;</span><br><span class="line">* - (<span class="typename">void</span>)<span class="string">addOperationWithBlock:</span>(<span class="typename">void</span> (^)(<span class="typename">void</span>))block;</span><br></pre></td></tr></table></figure>
+<h3 id="3-常见用法">3.常见用法</h3><p>1&gt; 设置最大并发数</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="pp">- <span class="params">(<span class="variable">NSInteger</span>)</span>maxConcurrentOperationCount;</span><br><span class="line">- <span class="params">(void)</span>setMaxConcurrentOperationCount:<span class="params">(<span class="variable">NSInteger</span>)</span>cnt;</span></span><br></pre></td></tr></table></figure>
+<p>2&gt; 队列的其他操作</p>
+<ul>
+<li>取消所有的操作</li>
+</ul>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- <span class="list">(<span class="keyword">void</span>)</span>cancelAllOperations<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>暂停所有的操作</li>
+</ul>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">[queue setSuspended:YES]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>恢复所有的操作</li>
+</ul>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">[queue setSuspended:NO]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-操作之间的依赖（面试题）">4.操作之间的依赖（面试题）</h3><ul>
+<li>NSOperation之间可以设置依赖来保证执行顺序</li>
+</ul>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">* [operationB addDependency:operationA];</span></span><br><span class="line"><span class="comment">// 操作B依赖于操作A，等操作A执行完毕后，才会执行操作B</span></span><br><span class="line"><span class="comment">* 注意：不能相互依赖，比如A依赖B，B依赖A</span></span><br><span class="line"><span class="comment">* 可以在不同queue的NSOperation之间创建依赖关系</span></span><br></pre></td></tr></table></figure>
+<h3 id="5-线程之间的通信">5.线程之间的通信</h3><figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">NSOperationQueue *queue = <span class="comment">[<span class="comment">[NSOperationQueue alloc]</span> init]</span>;</span><br><span class="line"><span class="comment">[queue addOperationWithBlock:^&#123;</span><br><span class="line">    // 1.执行一些比较耗时的操作</span><br><span class="line">    </span><br><span class="line">    // 2.回到主线程</span><br><span class="line">    <span class="comment">[<span class="comment">[NSOperationQueue mainQueue]</span> addOperationWithBlock:^&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;]</span>;</span><br><span class="line">&#125;]</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="五、从其他线程回到主线程的方式">五、从其他线程回到主线程的方式</h2><h3 id="1-perform…">1.perform…</h3><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="collection">[self performSelectorOnMainThread:&lt;#<span class="list">(<span class="keyword">SEL</span>)</span>#&gt; withObject:&lt;#<span class="list">(<span class="keyword">id</span>)</span>#&gt; waitUntilDone:&lt;#<span class="list">(<span class="keyword">BOOL</span>)</span>#&gt;]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-GCD">2.GCD</h3><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dispatch_async<span class="list">(<span class="keyword">dispatch_get_main_queue</span><span class="list">()</span>, ^&#123;</span><br><span class="line"></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-NSOperationQueue">3.NSOperationQueue</h3><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="collection">[<span class="collection">[NSOperationQueue mainQueue]</span> addOperationWithBlock:<span class="comment">^&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span>]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<h2 id="六、第三方框架的使用建议">六、第三方框架的使用建议</h2><h3 id="1-用第三方框架的目的">1.用第三方框架的目的</h3><p>1&gt; 开发效率：快速开发，人家封装好的一行代码顶自己写的N行<br>2&gt; 为了使用这个功能最牛逼的实现</p>
+<h3 id="2-第三方框架过多，很多坏处(忽略不计)">2.第三方框架过多，很多坏处(忽略不计)</h3><p>1&gt; 管理、升级、更新<br>2&gt; 第三方框架有BUG，等待作者解决<br>3&gt; 第三方框架的作者不幸去世、停止更新（潜在的BUG无人解决）<br>4&gt; 感觉：自己好水</p>
+<h3 id="3-比如">3.比如</h3><p>流媒体：播放在线视频、音频（边下载边播放）<br>非常了解音频、视频文件的格式<br>每一种视频都有自己的解码方式（C\C++）</p>
+<h3 id="4-总结">4.总结</h3><p>1&gt; 站在巨人的肩膀上编程<br>2&gt; 没有关系，使劲用那么比较稳定的第三方框架</p>
+<h2 id="七、SDWebImage的图片下载">七、SDWebImage的图片下载</h2><h3 id="1-面试题">1.面试题</h3><p>1&gt; 如何防止一个url对应的图片重复下载</p>
+<ul>
+<li>“cell下载图片思路 – 有沙盒缓存”</li>
+</ul>
+<p>2&gt; SDWebImage的默认缓存时长是多少？</p>
+<ul>
+<li>1个星期</li>
+</ul>
+<p>3&gt; SDWebImage底层是怎么实现的？</p>
+<ul>
+<li>上课PPT的“cell下载图片思路 – 有沙盒缓存”</li>
+</ul>
+<h3 id="2-SDWebImage">2.SDWebImage</h3><p>1&gt; 常用方法</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="pp">- <span class="params">(void)</span>sd_setImageWithURL:<span class="params">(<span class="variable">NSURL</span> *)</span>url placeholderImage:<span class="params">(<span class="variable">UIImage</span> *)</span>placeholder;</span><br><span class="line"></span><br><span class="line">- <span class="params">(void)</span>sd_setImageWithURL:<span class="params">(<span class="variable">NSURL</span> *)</span>url placeholderImage:<span class="params">(<span class="variable">UIImage</span> *)</span>placeholder options:<span class="params">(<span class="variable">SDWebImageOptions</span>)</span>options;</span><br><span class="line"></span><br><span class="line">- <span class="params">(void)</span>sd_setImageWithURL:<span class="params">(<span class="variable">NSURL</span> *)</span>url placeholderImage:<span class="params">(<span class="variable">UIImage</span> *)</span>placeholder completed:<span class="params">(<span class="variable">SDWebImageCompletionBlock</span>)</span>completedBlock;</span><br><span class="line"></span><br><span class="line">- <span class="params">(void)</span>sd_setImageWithURL:<span class="params">(<span class="variable">NSURL</span> *)</span>url placeholderImage:<span class="params">(<span class="variable">UIImage</span> *)</span>placeholder options:<span class="params">(<span class="variable">SDWebImageOptions</span>)</span>options progress:<span class="params">(<span class="variable">SDWebImageDownloaderProgressBlock</span>)</span>progressBlock completed:<span class="params">(<span class="variable">SDWebImageCompletionBlock</span>)</span>completedBlock;</span></span><br></pre></td></tr></table></figure>
+<p>2&gt; SDWebImageOptions</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">*</span> SDWebImageRetryFailed : 下载失败后，会自动重新下载</span><br><span class="line"><span class="keyword">*</span> SDWebImageLowPriority : 当正在进行UI交互时，自动暂停内部的一些下载操作</span><br><span class="line"><span class="keyword">*</span> SDWebImageRetryFailed |<span class="string"> SDWebImageLowPriority : 拥有上面2个功能</span></span><br></pre></td></tr></table></figure></span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/13/NSOperation-Notes/" rel="next" title="NSOperation Notes">
+                <i class="fa fa-chevron-left"></i> NSOperation Notes
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="RexXiang" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">RexXiang</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">About iOS and Sth in my Life.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程的注意点（掌握）"><span class="nav-number">1.</span> <span class="nav-text">多线程的注意点（掌握）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、NSThread（掌握）"><span class="nav-number">1.1.</span> <span class="nav-text">一、NSThread（掌握）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、线程同步（掌握）"><span class="nav-number">1.2.</span> <span class="nav-text">二、线程同步（掌握）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、GCD"><span class="nav-number">2.</span> <span class="nav-text">三、GCD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-队列和任务"><span class="nav-number">2.1.</span> <span class="nav-text">1.队列和任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-执行任务的函数"><span class="nav-number">2.2.</span> <span class="nav-text">2.执行任务的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-常见的组合（掌握）"><span class="nav-number">2.3.</span> <span class="nav-text">3.常见的组合（掌握）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-线程间的通信（掌握）"><span class="nav-number">2.4.</span> <span class="nav-text">4.线程间的通信（掌握）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-GCD的所有API都在libdispatch-dylib，Xcode会自动导入这个库"><span class="nav-number">2.5.</span> <span class="nav-text">5.GCD的所有API都在libdispatch.dylib，Xcode会自动导入这个库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-延迟执行（掌握）"><span class="nav-number">2.6.</span> <span class="nav-text">6.延迟执行（掌握）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-一次性代码（掌握）"><span class="nav-number">2.7.</span> <span class="nav-text">7.一次性代码（掌握）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、NSOperation和NSOperationQueue"><span class="nav-number">3.</span> <span class="nav-text">四、NSOperation和NSOperationQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-队列的类型"><span class="nav-number">3.1.</span> <span class="nav-text">1.队列的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-队列添加任务"><span class="nav-number">3.2.</span> <span class="nav-text">2.队列添加任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-常见用法"><span class="nav-number">3.3.</span> <span class="nav-text">3.常见用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-操作之间的依赖（面试题）"><span class="nav-number">3.4.</span> <span class="nav-text">4.操作之间的依赖（面试题）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-线程之间的通信"><span class="nav-number">3.5.</span> <span class="nav-text">5.线程之间的通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、从其他线程回到主线程的方式"><span class="nav-number">4.</span> <span class="nav-text">五、从其他线程回到主线程的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-perform…"><span class="nav-number">4.1.</span> <span class="nav-text">1.perform…</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-GCD"><span class="nav-number">4.2.</span> <span class="nav-text">2.GCD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-NSOperationQueue"><span class="nav-number">4.3.</span> <span class="nav-text">3.NSOperationQueue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、第三方框架的使用建议"><span class="nav-number">5.</span> <span class="nav-text">六、第三方框架的使用建议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-用第三方框架的目的"><span class="nav-number">5.1.</span> <span class="nav-text">1.用第三方框架的目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-第三方框架过多，很多坏处(忽略不计)"><span class="nav-number">5.2.</span> <span class="nav-text">2.第三方框架过多，很多坏处(忽略不计)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-比如"><span class="nav-number">5.3.</span> <span class="nav-text">3.比如</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-总结"><span class="nav-number">5.4.</span> <span class="nav-text">4.总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、SDWebImage的图片下载"><span class="nav-number">6.</span> <span class="nav-text">七、SDWebImage的图片下载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-面试题"><span class="nav-number">6.1.</span> <span class="nav-text">1.面试题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-SDWebImage"><span class="nav-number">6.2.</span> <span class="nav-text">2.SDWebImage</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2015</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RexXiang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>
