@@ -53,22 +53,19 @@
 
 
 
-<meta name="description" content="一些和NSOpreation有关的
-创建NSOperation对象利用NSBlockOperation创建
-1234567891011NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^&amp;#123;    NSLog(@&quot;%@---A&quot;,[NSThread currentThread]);&amp;#125;];NSBlock">
+<meta name="description" content="从网络端获取数据建立url1NSURL *url = [NSURL URLWithString:@&quot;http://127.0.0.1/demo.json&quot;];
+建立request123456789101112131415161718参数：url：资源路径cachePolicy：缓存策略:NSURLRequestUseProtocolCachePolicy = 0, // 默认缓存策略，会自动缓存">
 <meta property="og:type" content="article">
-<meta property="og:title" content="NSOperation Notes">
-<meta property="og:url" content="http://yoursite.com/2015/11/13/NSOperation-Notes/index.html">
+<meta property="og:title" content="网络基础（异步）">
+<meta property="og:url" content="http://yoursite.com/2015/11/16/网络基础（异步）/index.html">
 <meta property="og:site_name" content="XxsCode&Sth">
-<meta property="og:description" content="一些和NSOpreation有关的
-创建NSOperation对象利用NSBlockOperation创建
-1234567891011NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^&amp;#123;    NSLog(@&quot;%@---A&quot;,[NSThread currentThread]);&amp;#125;];NSBlock">
-<meta property="og:updated_time" content="2015-11-13T05:41:35.000Z">
+<meta property="og:description" content="从网络端获取数据建立url1NSURL *url = [NSURL URLWithString:@&quot;http://127.0.0.1/demo.json&quot;];
+建立request123456789101112131415161718参数：url：资源路径cachePolicy：缓存策略:NSURLRequestUseProtocolCachePolicy = 0, // 默认缓存策略，会自动缓存">
+<meta property="og:updated_time" content="2015-11-16T08:15:05.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="NSOperation Notes">
-<meta name="twitter:description" content="一些和NSOpreation有关的
-创建NSOperation对象利用NSBlockOperation创建
-1234567891011NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^&amp;#123;    NSLog(@&quot;%@---A&quot;,[NSThread currentThread]);&amp;#125;];NSBlock">
+<meta name="twitter:title" content="网络基础（异步）">
+<meta name="twitter:description" content="从网络端获取数据建立url1NSURL *url = [NSURL URLWithString:@&quot;http://127.0.0.1/demo.json&quot;];
+建立request123456789101112131415161718参数：url：资源路径cachePolicy：缓存策略:NSURLRequestUseProtocolCachePolicy = 0, // 默认缓存策略，会自动缓存">
 
 
 
@@ -80,7 +77,7 @@
   };
 </script>
 
-  <title> NSOperation Notes | XxsCode&Sth </title>
+  <title> 网络基础（异步） | XxsCode&Sth </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -200,7 +197,7 @@
             
             
               
-                NSOperation Notes
+                网络基础（异步）
               
             
           </h1>
@@ -209,8 +206,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-11-13T13:32:07+08:00" content="2015-11-13">
-              2015-11-13
+            <time itemprop="dateCreated" datetime="2015-11-16T16:08:33+08:00" content="2015-11-16">
+              2015-11-16
             </time>
           </span>
 
@@ -233,17 +230,9 @@
       
 
       
-        <span itemprop="articleBody"><h1 id="一些和NSOpreation有关的">一些和NSOpreation有关的</h1><hr>
-<h2 id="创建NSOperation对象">创建NSOperation对象</h2><p>利用NSBlockOperation创建</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSBlockOperation</span> *op = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@---A"</span>,[<span class="built_in">NSThread</span> currentThread]);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSBlockOperation</span> *op1 =[<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@---B"</span>,[<span class="built_in">NSThread</span> currentThread]);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSBlockOperation</span> *op2 = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@---C"</span>,[<span class="built_in">NSThread</span> currentThread]);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
- <a id="more"></a>
-<p> 或者利用NSInvocationOperation创建</p>
- <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSInvocationOperation</span> *op = [[<span class="built_in">NSInvocationOperation</span> alloc] </span><br><span class="line">              initWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(downloadImage) object:<span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
-<h2 id="将创建好的NSOperation对象放到NSOperationQueue中">将创建好的NSOperation对象放到NSOperationQueue中</h2><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="constant">NSOperationQueue</span> *q = [[<span class="constant">NSOperationQueue</span> alloc] init];</span><br><span class="line"></span><br><span class="line">[q <span class="symbol">addOperations:</span><span class="annotation">@[op,op1,op2]</span> <span class="symbol">waitUntilFinished:</span><span class="constant">YES</span>];</span><br></pre></td></tr></table></figure>
-<p>或者</p>
-<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSOperationQueue *q = <span class="comment">[<span class="comment">[NSOperationQueue alloc]</span> init]</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">[q addOperation:op]</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="其他用法">其他用法</h2><p>依赖关系</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//指定任务之间的依赖关系 -- 依赖关系可以跨队列(可以在子线程下载完，到主线程更新UI)</span></span><br><span class="line"><span class="attr_selector">[op2 addDependency:op1]</span>;</span><br><span class="line"><span class="attr_selector">[op3 addDependency:op2]</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意点：一定不要出现循环依赖关系</span></span><br><span class="line"><span class="comment">//[op1 addDependency:op3];</span></span><br><span class="line"><span class="comment">// waitUntilFinished 类似GCD的调度组的通知</span></span><br><span class="line"><span class="comment">// NO 不等待，会直接执行</span></span><br><span class="line"><span class="comment">// YES 等待上面的操作执行结束</span></span><br></pre></td></tr></table></figure>
+        <span itemprop="articleBody"><h2 id="从网络端获取数据">从网络端获取数据</h2><h3 id="建立url">建立url</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://127.0.0.1/demo.json"</span>];</span><br></pre></td></tr></table></figure>
+<h3 id="建立request">建立request</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">参数：url：资源路径</span><br><span class="line"></span><br><span class="line">cachePolicy：缓存策略:</span><br><span class="line"></span><br><span class="line">NSURLRequestUseProtocolCachePolicy = <span class="number">0</span>, <span class="comment">// 默认缓存策略，会自动缓存</span></span><br><span class="line">     </span><br><span class="line">NSURLRequestReload(刷新)Ignoring(忽略)Local(本地)CacheData(缓存数据) = <span class="number">1</span>, 每次都从服务器去加载数据。忽略本地缓存</span><br><span class="line"></span><br><span class="line">底下两个 一般来离线访问。一般配合Reachability(苹果提供的检测网络连接的框架)使用</span><br><span class="line">     <span class="comment">// 如果用户使用的wifi，就使用这个策略</span></span><br><span class="line">NSURLRequestReturnCacheDataElseLoad = <span class="number">2</span>, <span class="comment">// 如果有缓存，就用缓存。没有就上网加载</span></span><br><span class="line">     <span class="comment">// 如果用户使用的3G，就使用下面的策略</span></span><br><span class="line">NSURLRequestReturnCacheDataDontLoad = <span class="number">3</span>, <span class="comment">// 如没有缓存，就用缓存。没有返回空，死活不上网</span></span><br><span class="line"></span><br><span class="line">timeoutInterval：超时时间，默认是<span class="number">60</span>秒，一般设置<span class="number">15</span>～<span class="number">20</span>秒。超过这个时间以后，如果服务器还没有相应，就不继续等待了</span><br><span class="line">     SDWebImage超时时长设置的是--&gt;<span class="number">15</span>秒</span><br><span class="line">     AFN超时时长 <span class="number">60</span>秒</span><br><span class="line">    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:<span class="number">0</span> timeoutInterval:<span class="number">2</span>];</span><br></pre></td></tr></table></figure>
+<h3 id="建立连接connection">建立连接connection</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> 参数:Request 请求</span><br><span class="line"> queue: 队列，这个队列，是完成以后，回调block执行的队列、</span><br><span class="line"> Asynchronous：只要是异步，肯定会开新的线程</span><br><span class="line"> </span><br><span class="line"> // 使用场景：如果下载的是压缩包，解压缩也是耗时操作。也需要放在子线程</span><br><span class="line"> // 如果回调block里面只需要更新UI，那么就可以只开始指定queue为主队列</span><br><span class="line"> </span><br><span class="line"> Handler：网络访问完成以后执行的代码块</span><br><span class="line"> response: 服务器的响应（包含响应行/响应头...下载的时候才去关心这个）</span><br><span class="line"> data： 返回的二进制数据</span><br><span class="line"> connectionError：在连接服务器的时候的错误，只要是能正常连接到服务器，就不会有错。</span><br><span class="line"> 只要有网络候出现的错访问，就会可能有错误</span><br><span class="line"> */</span></span><br><span class="line"></span><br><span class="line">[<span class="built_in">NSURLConnection</span> sendAsynchronousRequest:request queue:[[<span class="built_in">NSOperationQueue</span> alloc] init] completionHandler:^(<span class="built_in">NSURLResponse</span> *response, <span class="built_in">NSData</span> *data, <span class="built_in">NSError</span> *connectionError) &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (connectionError || data == <span class="literal">nil</span>) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%@----您的网络不给力，请稍后再试"</span>, connectionError);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;<span class="comment">// url错了，才会有错误信息</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 解压缩</span></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"解压缩---%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 更新UI在主线程</span></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="comment">// 网络请求完成以后调用的这块代码，从服务器获得二进制数据</span></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"更新UI%@---%@"</span>, [[<span class="built_in">NSString</span> alloc] initWithData:data encoding:<span class="built_in">NSUTF8StringEncoding</span>], [<span class="built_in">NSThread</span> currentThread]);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 </span>
       
     </div>
@@ -255,17 +244,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/12/GCD-Notes/" rel="next" title="GCD Notes">
-                <i class="fa fa-chevron-left"></i> GCD Notes
+              <a href="/2015/11/16/多线程小结/" rel="next" title="多线程小结">
+                <i class="fa fa-chevron-left"></i> 多线程小结
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/11/16/多线程小结/" rel="prev" title="多线程小结">
-                多线程小结 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -379,7 +364,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一些和NSOpreation有关的"><span class="nav-number">1.</span> <span class="nav-text">一些和NSOpreation有关的</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建NSOperation对象"><span class="nav-number">1.1.</span> <span class="nav-text">创建NSOperation对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将创建好的NSOperation对象放到NSOperationQueue中"><span class="nav-number">1.2.</span> <span class="nav-text">将创建好的NSOperation对象放到NSOperationQueue中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他用法"><span class="nav-number">1.3.</span> <span class="nav-text">其他用法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从网络端获取数据"><span class="nav-number">1.</span> <span class="nav-text">从网络端获取数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建立url"><span class="nav-number">1.1.</span> <span class="nav-text">建立url</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立request"><span class="nav-number">1.2.</span> <span class="nav-text">建立request</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立连接connection"><span class="nav-number">1.3.</span> <span class="nav-text">建立连接connection</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

@@ -202,6 +202,89 @@
             
               
                 
+                <a class="post-title-link" href="/2015/11/16/网络基础（异步）/" itemprop="url">
+                  网络基础（异步）
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-11-16T16:08:33+08:00" content="2015-11-16">
+              2015-11-16
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <h2 id="从网络端获取数据">从网络端获取数据</h2><h3 id="建立url">建立url</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://127.0.0.1/demo.json"</span>];</span><br></pre></td></tr></table></figure>
+<h3 id="建立request">建立request</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">参数：url：资源路径</span><br><span class="line"></span><br><span class="line">cachePolicy：缓存策略:</span><br><span class="line"></span><br><span class="line">NSURLRequestUseProtocolCachePolicy = <span class="number">0</span>, <span class="comment">// 默认缓存策略，会自动缓存</span></span><br><span class="line">     </span><br><span class="line">NSURLRequestReload(刷新)Ignoring(忽略)Local(本地)CacheData(缓存数据) = <span class="number">1</span>, 每次都从服务器去加载数据。忽略本地缓存</span><br><span class="line"></span><br><span class="line">底下两个 一般来离线访问。一般配合Reachability(苹果提供的检测网络连接的框架)使用</span><br><span class="line">     <span class="comment">// 如果用户使用的wifi，就使用这个策略</span></span><br><span class="line">NSURLRequestReturnCacheDataElseLoad = <span class="number">2</span>, <span class="comment">// 如果有缓存，就用缓存。没有就上网加载</span></span><br><span class="line">     <span class="comment">// 如果用户使用的3G，就使用下面的策略</span></span><br><span class="line">NSURLRequestReturnCacheDataDontLoad = <span class="number">3</span>, <span class="comment">// 如没有缓存，就用缓存。没有返回空，死活不上网</span></span><br><span class="line"></span><br><span class="line">timeoutInterval：超时时间，默认是<span class="number">60</span>秒，一般设置<span class="number">15</span>～<span class="number">20</span>秒。超过这个时间以后，如果服务器还没有相应，就不继续等待了</span><br><span class="line">     SDWebImage超时时长设置的是--&gt;<span class="number">15</span>秒</span><br><span class="line">     AFN超时时长 <span class="number">60</span>秒</span><br><span class="line">    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:<span class="number">0</span> timeoutInterval:<span class="number">2</span>];</span><br></pre></td></tr></table></figure>
+<h3 id="建立连接connection">建立连接connection</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> 参数:Request 请求</span><br><span class="line"> queue: 队列，这个队列，是完成以后，回调block执行的队列、</span><br><span class="line"> Asynchronous：只要是异步，肯定会开新的线程</span><br><span class="line"> </span><br><span class="line"> // 使用场景：如果下载的是压缩包，解压缩也是耗时操作。也需要放在子线程</span><br><span class="line"> // 如果回调block里面只需要更新UI，那么就可以只开始指定queue为主队列</span><br><span class="line"> </span><br><span class="line"> Handler：网络访问完成以后执行的代码块</span><br><span class="line"> response: 服务器的响应（包含响应行/响应头...下载的时候才去关心这个）</span><br><span class="line"> data： 返回的二进制数据</span><br><span class="line"> connectionError：在连接服务器的时候的错误，只要是能正常连接到服务器，就不会有错。</span><br><span class="line"> 只要有网络候出现的错访问，就会可能有错误</span><br><span class="line"> */</span></span><br><span class="line"></span><br><span class="line">[<span class="built_in">NSURLConnection</span> sendAsynchronousRequest:request queue:[[<span class="built_in">NSOperationQueue</span> alloc] init] completionHandler:^(<span class="built_in">NSURLResponse</span> *response, <span class="built_in">NSData</span> *data, <span class="built_in">NSError</span> *connectionError) &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (connectionError || data == <span class="literal">nil</span>) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%@----您的网络不给力，请稍后再试"</span>, connectionError);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;<span class="comment">// url错了，才会有错误信息</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 解压缩</span></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"解压缩---%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 更新UI在主线程</span></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="comment">// 网络请求完成以后调用的这块代码，从服务器获得二进制数据</span></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"更新UI%@---%@"</span>, [[<span class="built_in">NSString</span> alloc] initWithData:data encoding:<span class="built_in">NSUTF8StringEncoding</span>], [<span class="built_in">NSThread</span> currentThread]);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/11/16/多线程小结/" itemprop="url">
                   多线程小结
                 </a>
@@ -553,7 +636,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-count">5</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
